@@ -3,12 +3,13 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('images/pozadina1.jpg'); /* Putanja do slike */
-    background-size: cover; /* Slika ispunjava ceo ekran */
-    background-position: center; /* Središte slike je centrirano */
-    background-repeat: no-repeat; /* Sprečava ponavljanje slike */
-    min-height: 100vh; /* Osigurava da pozadina pokriva celu visinu stranice */
-    color: white; /* Boja teksta da se bolje vidi na tamnoj pozadini */
+    background-image: url('images/pozadina1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: white;
 }
 
 header {
@@ -18,9 +19,8 @@ header {
     padding: 20px 0;
 }
 
-nav {
-    margin-top: 10px;
-}
+header h1 { margin: 0; }
+nav { margin-top: 10px; }
 
 nav button {
     margin: 5px;
@@ -44,10 +44,6 @@ main {
     min-height: 100vh;
     padding: 20px;
     overflow-x: hidden;
-    background-image: url('images/pozadina.jpg'); /* Putanja do slike */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 #mainContent {
@@ -65,10 +61,15 @@ main {
     text-align: center;
 }
 
+/* === IZMENJENI DEO ZA OPIS PREKO SLIKE === */
+
 .product-img-container {
     width: 100%;
     height: 350px;
-    position: relative;
+    position: relative; /* Ključno za pozicioniranje opisa */
+    cursor: pointer; /* Pokazuje korisniku da može da klikne */
+    overflow: hidden; /* Osigurava da opis ne "curi" van kontejnera */
+    border-radius: 10px;
 }
 
 .product img {
@@ -78,34 +79,45 @@ main {
     border-radius: 10px;
 }
 
-.product h3, .product p {
-    color: white;
-    margin: 10px 0;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: rgba(0, 0, 0, 0.7); /* Crna pozadina sa providnošću */
-    padding: 10px;
-    border-radius: 5px; /* Zaobljeni uglovi */
-    border: 1px solid white; /* Belo ivica za tekst */
-    text-align: center;
-}
-
 .product-description {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8); /* Malo tamnija pozadina za bolju čitljivost */
     color: white;
     font-size: 14px;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
+    height: 100%; /* Da zauzme celu visinu kontejnera */
+    display: flex;
+    align-items: center; /* Vertikalno centriranje teksta */
+    justify-content: center; /* Horizontalno centriranje teksta */
+    box-sizing: border-box;
+
+    /* INICIJALNO SKRIVEN */
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease-in-out;
 }
 
-.product:hover .product-description {
+/* KADA JE PROIZVOD AKTIVAN, PRIKAŽI OPIS */
+.product-img-container.active .product-description {
     opacity: 1;
+}
+
+/* ======================================= */
+
+
+.product h3, .product p {
+    color: white;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid white;
+    text-align: center;
 }
 
 table {
@@ -117,9 +129,9 @@ table {
 
 table th, table td {
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.7); /* Crna pozadina sa providnošću */
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    border: 1px solid white; /* Belo ivica */
+    border: 1px solid white;
     text-align: center;
 }
 
@@ -130,8 +142,7 @@ table th, table td {
 }
 
 .payment-button {
-    margin-top: auto; /* Pomeranje na dno */
-    align-self: stretch; /* Dugme se proteže horizontalno, ako želiš */
+    margin-top: 20px;
     text-align: center;
     padding: 10px 15px;
     background-color: #B22222;
@@ -144,7 +155,7 @@ table th, table td {
 
 .payment-button:hover {
     background-color: #FF4500;
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); /* Svetleća senka na hover */
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
 }
 
 footer {
@@ -153,69 +164,25 @@ footer {
     text-align: center;
     padding: 10px 0;
 }
-/* Stilovi za modalni prozor */
-.modal {
-    display: none; /* Modal se inicijalno ne prikazuje */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* Tamna pozadina sa providnošću */
-    justify-content: center;
-    align-items: center;
-}
+/* Stilovi za modal i ostalo ostaju isti... */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+.modal-content { background-color: #8B0000; color: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 15px rgba(0,0,0,0.8); }
+.modal-content h2 { font-size: 24px; margin-bottom: 20px; color: #FFD700; }
+.modal-content p { font-size: 18px; margin-bottom: 20px; }
+.modal-content button { margin: 10px; padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s, box-shadow 0.3s; }
+.modal-content #yesBtn { background-color: green; color: white; }
+.modal-content #yesBtn:hover { background-color: #32CD32; box-shadow: 0 0 10px rgba(50, 205, 50, 0.8); }
+.modal-content #noBtn { background-color: red; color: white; }
+.modal-content #noBtn:hover { background-color: #FF4500; box-shadow: 0 0 10px rgba(255, 69, 0, 0.8); }
 
-.modal-content {
-    background-color: #8B0000; /* Tamno crvena boja */
-    color: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+/* === MEDIA QUERIES OSTAJU ISTI === */
+@media (max-width: 800px) {
+    .product { flex: 0 1 calc(50% - 20px); }
+    table { width: 95%; }
 }
-
-.modal-content h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #FFD700; /* Zlatna boja za naglasak */
-}
-
-.modal-content p {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.modal-content button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.modal-content #yesBtn {
-    background-color: green;
-    color: white;
-}
-
-.modal-content #yesBtn:hover {
-    background-color: #32CD32; /* Svetlija zelena boja */
-    box-shadow: 0 0 10px rgba(50, 205, 50, 0.8);
-}
-
-.modal-content #noBtn {
-    background-color: red;
-    color: white;
-}
-
-.modal-content #noBtn:hover {
-    background-color: #FF4500; /* Svetlo crvena boja */
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+@media (max-width: 500px) {
+    .product { flex: 0 1 100%; }
+    table th, table td { font-size: 12px; padding: 5px; }
+    .cart-item-img { width: 60px; height: 60px; }
+    header h1 { font-size: 24px; }
 }

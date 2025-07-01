@@ -18,6 +18,7 @@ function showProducts() {
     products.forEach(product => {
         const div = document.createElement("div");
         div.className = "product";
+        // Vraćamo originalnu HTML strukturu gde je opis unutar kontejnera slike
         div.innerHTML = `
             <div class="product-img-container">
                 <img src="${product.img}" alt="${product.name}">
@@ -31,7 +32,61 @@ function showProducts() {
         `;
         main.appendChild(div);
     });
+
+    // POZIVAMO NOVU FUNKCIJU NAKON ŠTO SE PROIZVODI PRIKAŽU
+    setupProductInteractions();
 }
+
+// *** NOVA FUNKCIJA ZA UPRAVLJANJE HOVER/CLICK EFEKTIMA ***
+function setupProductInteractions() {
+    const productImgContainers = document.querySelectorAll('.product-img-container');
+
+    productImgContainers.forEach(container => {
+        // --- LOGIKA ZA KLIK (RADI I NA DESKTOPU I NA MOBILNOM) ---
+        container.addEventListener('click', function(event) {
+            // Sprečava da se klik na dugme "dodaj u korpu" registruje kao klik na sliku
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'INPUT') {
+                return;
+            }
+            
+            const currentlyActive = document.querySelector('.product-img-container.active');
+            const isThisActive = this.classList.contains('active');
+
+            // Ako postoji aktivni kontejner, deaktiviraj ga
+            if (currentlyActive) {
+                currentlyActive.classList.remove('active');
+            }
+            
+            // Ako ovaj koji je kliknut nije bio aktivan, aktiviraj ga
+            if (!isThisActive) {
+                this.classList.add('active');
+            }
+        });
+
+        // --- DODATNA LOGIKA SAMO ZA DESKTOP (HOVER) ---
+        // Dodajemo hover samo ako uređaj nije touch screen
+        if (!window.matchMedia("(pointer: coarse)").matches) {
+            container.addEventListener('mouseenter', function() {
+                this.classList.add('active');
+            });
+
+            container.addEventListener('mouseleave', function() {
+                this.classList.remove('active');
+            });
+        }
+    });
+
+    // Klik van proizvoda zatvara opis
+    document.getElementById('mainContent').addEventListener('click', function(e) {
+        if (e.target.id === 'mainContent') {
+             const currentlyActive = document.querySelector('.product-img-container.active');
+             if (currentlyActive) {
+                currentlyActive.classList.remove('active');
+            }
+        }
+    });
+}
+
 
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
@@ -47,8 +102,7 @@ function addToCart(productId) {
     if (existingItem) {
         existingItem.quantity += quantity;
     } else {
-        const cartItem = { ...product, quantity };
-        cart.push(cartItem);
+        cart.push({ ...product, quantity });
     }
 
     alert(`${quantity} x ${product.name} je dodato u korpu!`);
@@ -94,19 +148,22 @@ function showCart() {
     const totalRow = document.createElement("tfoot");
     totalRow.innerHTML = `
         <tr>
-            <td colspan="4">Ukupno:</td>
-            <td>${total} RSD</td>
+            <td colspan="4" style="text-align:right; font-weight:bold;">UKUPNO:</td>
+            <td style="font-weight:bold;">${total} RSD</td>
         </tr>
     `;
     table.appendChild(totalRow);
-
+    
     const paymentButton = document.createElement("button");
     paymentButton.textContent = "Plati";
     paymentButton.className = "payment-button";
-
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.textAlign = 'center';
+    buttonContainer.appendChild(paymentButton);
     main.appendChild(table);
-    main.appendChild(paymentButton);
+    main.appendChild(buttonContainer);
 }
+
 
 document.getElementById("productsBtn").addEventListener("click", showProducts);
 document.getElementById("cartBtn").addEventListener("click", showCart);
@@ -121,10 +178,8 @@ function showAgeModal() {
     });
 
     document.getElementById("noBtn").addEventListener("click", () => {
-        alert("Nažalost, morate biti stariji od 18 godina da biste koristili ovaj sajt.");
-        window.location.href = "https://www.google.com";
+        document.body.innerHTML = '<h1 style="color:white; text-align:center; padding-top: 50px;">Nažalost, morate biti stariji od 18 godina da biste pristupili ovom sajtu.</h1>';
     });
 }
 
-// Prikazuje modal pri učitavanju stranice
 window.onload = showAgeModal;
